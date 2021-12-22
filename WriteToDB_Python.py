@@ -59,7 +59,6 @@ for k in tqdm(range(10000)):
         ParticleY = r * np.sin(p)
 
     ParticleLocation = np.array(x)
-    row.append(x)
 
     # Q represents the vector that contains elements that represent the point flow rate values
     Q = []
@@ -89,17 +88,11 @@ for k in tqdm(range(10000)):
 
     # Omit pi for non-dimensionalisation
     particle_vel = (sum(velocity))
-    row.append(particle_vel.tolist())
 
     # Append to db
     vel = particle_vel.tolist()
     VelX = vel[0]
     VelY = vel[1]
-
-    data_row = (sum(row, []))
-    dataset.loc[len(dataset)] = data_row
-    data_row.clear()
-    row.clear()
    
     # Write to DB
     datapoint = Point("AnalyticalSolution").tag("Data Description", "Testing Data").field("Particle_X",ParticleX).field("Particle_Y",ParticleY).field("Q1",q_1).field("Q2",q_2).field("Q3",q_3).field("Q4",q_4).field("Q5",q_5).field("Q6",q_6).field("Velocity_X",VelX).field("Velocity_Y",VelY).time(datetime.datetime.utcnow().isoformat())
@@ -112,7 +105,4 @@ for k in tqdm(range(10000)):
                                                     max_retry_delay=30_000,
                                                     exponential_base=2)) as _write_client:
                                                     _write_client.write(bucket, org, datapoint) 
-
-
-dataset.to_csv("2D_Hele_Shaw_Data (test).csv", index=False)
 
